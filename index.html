@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>麻将记账本</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#FF8C42">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="麻将记账">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+  <!-- 全局水印 -->
+  <div class="watermark">xt3</div>
+
+  <!-- 昵称设置页 -->
+  <div id="setupPage" class="page">
+    <div class="setup-container">
+      <div class="setup-icon">🀄</div>
+      <h1 class="setup-title handwriting">麻将记账本</h1>
+      <p class="setup-subtitle">记录每一局的输赢</p>
+      <div class="setup-form">
+        <label class="setup-label" for="nicknameInput">你的名字是？</label>
+        <input
+          type="text"
+          id="nicknameInput"
+          class="sketch-input setup-input"
+          placeholder="输入昵称..."
+          maxlength="12"
+          autocomplete="off"
+        >
+        <button id="startBtn" class="sketch-btn setup-btn">开始记账</button>
+        <p class="setup-hint">换个设备用一样名字看自己账本</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主页面 -->
+  <div id="mainPage" class="page hidden">
+    <header class="topbar">
+      <span class="topbar-brand handwriting">🀄 麻将记账本</span>
+      <div class="topbar-user" id="topbarUser">
+        <span class="user-emoji">👤</span>
+        <span id="displayNickname" class="user-name handwriting" title="点击修改昵称"></span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- 盈亏卡片 -->
+      <section class="balance-section">
+        <div class="balance-row">
+          <div class="sketch-card balance-card">
+            <div class="month-label-row">
+              <button id="monthPrevBtn" class="month-arrow" title="上个月">◂</button>
+              <span id="monthLabel" class="month-label handwriting"></span>
+              <button id="monthNextBtn" class="month-arrow" title="下个月">▸</button>
+            </div>
+            <p id="monthBalanceAmount" class="balance-amount handwriting">¥ 0.00</p>
+          </div>
+          <div class="sketch-card balance-card">
+            <p class="balance-label">累积盈亏</p>
+            <p id="balanceAmount" class="balance-amount handwriting">¥ 0.00</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 记录列表 -->
+      <section class="records-section">
+        <h2 class="section-title handwriting">历史记录</h2>
+        <div id="recordsList" class="records-list">
+          <!-- 空状态 -->
+          <div class="empty-state">
+            <span class="empty-icon">📝</span>
+            <p>还没有记录，记一笔吧</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 记一笔按钮 -->
+    <div class="fab-wrapper">
+      <button id="addBtn" class="sketch-btn fab">记一笔</button>
+    </div>
+  </div>
+
+  <!-- 记一笔弹窗 -->
+  <div id="recordModal" class="modal-overlay hidden">
+    <div class="modal sketch-card">
+      <h3 id="recordModalTitle" class="modal-title handwriting">记一笔</h3>
+      <input type="hidden" id="editRecordId" value="">
+
+      <div class="modal-field">
+        <label class="modal-label">金额</label>
+        <div class="amount-input-row">
+          <button id="typeToggle" class="amount-type win" data-type="win">赢</button>
+          <input
+            type="number"
+            id="amountInput"
+            class="sketch-input amount-input"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+            inputmode="decimal"
+          >
+          <span class="amount-unit">元</span>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label">日期</label>
+        <input type="date" id="dateInput" class="sketch-input date-input">
+      </div>
+
+      <div class="modal-actions">
+        <button id="cancelBtn" class="sketch-btn modal-btn cancel">取消</button>
+        <button id="confirmBtn" class="sketch-btn modal-btn confirm">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除确认弹窗 -->
+  <div id="deleteModal" class="modal-overlay hidden">
+    <div class="modal sketch-card modal-small">
+      <p class="delete-text">确定删除这条记录吗？</p>
+      <div class="modal-actions">
+        <button id="deleteCancelBtn" class="sketch-btn modal-btn cancel">取消</button>
+        <button id="deleteConfirmBtn" class="sketch-btn modal-btn danger">删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 昵称修改弹窗 -->
+  <div id="nicknameModal" class="modal-overlay hidden">
+    <div class="modal sketch-card modal-small">
+      <h3 class="modal-title handwriting">修改昵称</h3>
+      <input
+        type="text"
+        id="nicknameEditInput"
+        class="sketch-input"
+        placeholder="输入新昵称..."
+        maxlength="12"
+        autocomplete="off"
+      >
+      <div class="modal-actions">
+        <button id="nicknameCancelBtn" class="sketch-btn modal-btn cancel">取消</button>
+        <button id="nicknameSaveBtn" class="sketch-btn modal-btn confirm">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/storage.js"></script>
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/records.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/app.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function() {});
+    }
+  </script>
+</body>
+</html>

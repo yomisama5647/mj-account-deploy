@@ -1,0 +1,21 @@
+{
+  "name": "mj-account-deploy",
+  "version": "1.0.0",
+  "private": false,
+  "description": "A lightweight Mahjong account book PWA.",
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/server.js .",
+    "build": "node tools/build.js",
+    "check:release": "node tools/check-release.js",
+    "preview": "node tools/server.js dist",
+    "start": "node tools/server.js dist"
+  },
+  "keywords": [
+    "mahjong",
+    "accounting",
+    "pwa"
+  ],
+  "author": "",
+  "license": "MIT"
+}
